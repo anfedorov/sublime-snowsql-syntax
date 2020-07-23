@@ -8,7 +8,14 @@ file_extensions:
   - dml
 scope: source.sql
 contexts:
+  jinja:
+    - match: '{{'
+      push: jinja
+    - match: '}}'
+      pop: true
   main:
+    - match: '{{'
+      push: jinja
     - include: comments
     - match: '(?i:\s*\b(grant usage on|alter|create(?:\s+or\s+replace)?)\s+(share|aggregate|conversion|database|domain|function|group|(?:unique\s+)?index|language|operator class|operator|procedure|rule|schema|sequence|table|tablespace|trigger|type|user|vie|stage|external table|task|stream)\s+)(?:([\w{}\.]+)|''(\w+)''|"(\w+)"|`(\w+)`)'
       scope: meta.create.sql
@@ -117,12 +124,12 @@ contexts:
     - match: \|\|
       scope: keyword.operator.concatenator.sql
     - match: (?i)\b(CURRENT_(DATE|TIME(STAMP)?|USER)|(SESSION|SYSTEM)_USER)\b
-      comment: List of SQL99 built-in functions from http://www.oreilly.com/catalog/sqlnut/chapter/ch04.html
       scope: support.function.scalar.sql
     - match: (?i)\b(AVG|COUNT|MIN|MAX|SUM)(?=\s*\()
-      comment: List of SQL99 built-in functions from http://www.oreilly.com/catalog/sqlnut/chapter/ch04.html
       scope: support.function.aggregate.sql
-    - match: (?i)\b(ENDSWITH|CONCAT|SUBSTR|TO_JSON|MD5|SPLIT_PART|CONCATENATE|CONVERT|LOWER|SUBSTRING|TRANSLATE|TRIM|UPPER)\b
+    - match: (?i)\b(ENDSWITH|CONCAT|SUBSTR|TO_JSON|PARSE_JSON|MD5|SPLIT_PART|CONCATENATE|CONVERT|LOWER|SUBSTRING|TRANSLATE|TRIM|UPPER)\b
+      scope: support.function.string.sql
+    - match: (?i)\b(OBJECT_CONSTRUCT|DATEADD|HOUR|TO_JSON)\b
       scope: support.function.string.sql
     - match: (?i)\b(SYSTEM\$[A-Z_]+)(?=\s*\()
       comment: Snowflake SYSTEM functions
